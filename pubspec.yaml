@@ -15,4 +15,3 @@ dev_dependencies:
 dependencies:
   dotenv: ^4.1.0
   image: ^4.0.15
-  io: ^1.0.4
