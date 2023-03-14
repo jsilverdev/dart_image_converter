@@ -2,23 +2,36 @@ import 'dart:io';
 
 class Configuration {
   final Directory imageDir;
-  final double width;
-  final double height;
+  final int width;
+  final int height;
+  final String searchTerm;
+  final String prefixFile;
 
   const Configuration(
     this.imageDir,
     this.width,
     this.height,
+    this.searchTerm,
+    this.prefixFile
   );
 
   factory Configuration.load(
     Directory imageDir, {
-    double? width,
-    double? height,
+    int? width,
+    int? height,
+    String? searchTerm,
+    String? prefixFile,
   }) {
-    return Configuration(imageDir, width ?? 400, height ?? 400);
+    return Configuration(
+      imageDir,
+      width ?? 400,
+      height ?? 400,
+      searchTerm ?? 'logo',
+      prefixFile ?? ''
+    );
   }
 
   @override
-  String toString() => "[imageDir Path]: ${imageDir.path}, [width]: $width, [height]: $height";
+  String toString() =>
+      "[imageDir Path]: ${imageDir.path}, [width]: $width, [height]: $height, [searchTerm]: $searchTerm";
 }

@@ -8,8 +8,10 @@ Future<Configuration> loadConfig() async {
   final DotEnv env = DotEnv(includePlatformEnvironment: false)..load();
 
   String imagePath = env["IMAGES_PATH"] ?? (throw NullException());
-  double? width = double.tryParse(env["WIDTH"] ?? '');
-  double? height = double.tryParse(env["HEIGHT"] ?? '');
+  int? width = int.tryParse(env["WIDTH"] ?? '');
+  int? height = int.tryParse(env["HEIGHT"] ?? '');
+  String? searchTerm = env["SEARCH_TERM"];
+  String? prefix = env["PREFIX_FILE"];
 
   bool isDir = await FileSystemEntity.isDirectory(imagePath);
   if(!isDir) {
@@ -20,6 +22,8 @@ Future<Configuration> loadConfig() async {
     Directory(imagePath),
     width: width,
     height: height,
+    searchTerm: searchTerm,
+    prefixFile: prefix
   );
 
 }
