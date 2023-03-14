@@ -14,3 +14,7 @@ class NullException extends AppException {
 class DirectoryInvalidException extends AppException {
   DirectoryInvalidException(String path) : super("The path ($path) is not a valid directory");
 }
+
+class UserCancelException extends AppException {
+  UserCancelException() : super("The user cancel the action");
+}

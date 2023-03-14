@@ -6,13 +6,15 @@ class Configuration {
   final int height;
   final String searchTerm;
   final String prefixFile;
+  final bool skipFiles;
 
   const Configuration(
     this.imageDir,
     this.width,
     this.height,
     this.searchTerm,
-    this.prefixFile
+    this.prefixFile,
+    this.skipFiles,
   );
 
   factory Configuration.load(
@@ -21,17 +23,19 @@ class Configuration {
     int? height,
     String? searchTerm,
     String? prefixFile,
+    bool? skipFiles
   }) {
     return Configuration(
       imageDir,
       width ?? 400,
       height ?? 400,
       searchTerm ?? 'logo',
-      prefixFile ?? ''
+      prefixFile ?? '',
+      skipFiles ?? false
     );
   }
 
   @override
   String toString() =>
-      "[imageDir Path]: ${imageDir.path}, [width]: $width, [height]: $height, [searchTerm]: $searchTerm";
+      "[imageDir Path]: ${imageDir.path}, [width]: $width, [height]: $height, [searchTerm]: $searchTerm, [prefixFile]: $prefixFile [skipFiles]: $skipFiles";
 }
