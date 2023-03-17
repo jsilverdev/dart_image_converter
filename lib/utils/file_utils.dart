@@ -1,6 +1,8 @@
 import 'package:diacritic/diacritic.dart';
+import 'package:path/path.dart' as path;
 
-String getCustomFileName({
+String getCustomFilePath({
+  required String parentPath,
   required String dirName,
   required String extension,
   String prefixFile = '',
@@ -10,5 +12,5 @@ String getCustomFileName({
   String fileName = "$dirName$extension";
   if (prefixFile.isNotEmpty) fileName = "${prefixFile.toUpperCase()}_$fileName";
 
-  return fileName;
+  return path.join(parentPath, fileName);
 }
