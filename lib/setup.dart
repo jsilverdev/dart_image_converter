@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'errors/exceptions.dart';
-import 'utils/utils.dart';
+import 'utils/common.dart';
 
 void initialSetup(bool skipFiles) {
 
