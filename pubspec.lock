@@ -237,8 +237,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "8de527e1f850f5833c4b4d8f1136e3acecd84028"
-      resolved-ref: "8de527e1f850f5833c4b4d8f1136e3acecd84028"
+      ref: upgrade-dependencies
+      resolved-ref: "96502e22e29239828aa4d30dc7e1889357a939b4"
       url: "https://github.com/jsilverdev/pdfium_bindings.git"
     source: git
     version: "1.4.0"
