@@ -14,7 +14,7 @@ LogoFilesResult findLogoFilesByConfig(Configuration config) {
   List<File> logoFiles = config.imageDir
       .listSync(recursive: false, followLinks: false)
       .whereType<Directory>()
-      .where((dir) => dir.path != config.resultsPath)
+      .where((dir) => !path.equals(dir.path, config.resultsPath))
       .map(
         (dir) => dir
             .listSync(followLinks: false, recursive: false)
