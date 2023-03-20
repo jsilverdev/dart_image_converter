@@ -34,8 +34,8 @@ Map<String, String> validMimeTypes = {
   "pdf" : "application/pdf",
 };
 
-bool checkIfFileIsPdf(File file) {
-  return mime.lookupMimeType(file.path) == validMimeTypes['pdf'];
+bool checkFileType(File file, String fileType) {
+  return mime.lookupMimeType(file.path) == validMimeTypes[fileType];
 }
 
 void imageFromPdfFile(File pdfFile, int width, int height, String outPath) {

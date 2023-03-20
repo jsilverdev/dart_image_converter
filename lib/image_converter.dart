@@ -49,7 +49,7 @@ Future<void> resizeImages(List<File> logoFiles, Configuration config) async {
 
     if (config.skipFiles && File(newImagePath).existsSync()) continue;
 
-    if (checkIfFileIsPdf(logoFile)) {
+    if (checkFileType(logoFile, 'pdf')) {
       imageFromPdfFile(logoFile, config.width, config.height, newImagePath);
     } else {
       final cmd = img.Command()
