@@ -97,6 +97,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  ffi:
+    dependency: transitive
+    description:
+      name: ffi
+      sha256: a38574032c5f1dd06c4aee541789906c12ccaab8ba01446e800d9c5b79c4a978
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   file:
     dependency: transitive
     description:
@@ -225,6 +233,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
+  pdfium_bindings:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "8de527e1f850f5833c4b4d8f1136e3acecd84028"
+      resolved-ref: "8de527e1f850f5833c4b4d8f1136e3acecd84028"
+      url: "https://github.com/jsilverdev/pdfium_bindings.git"
+    source: git
+    version: "1.4.0"
   petitparser:
     dependency: transitive
     description:

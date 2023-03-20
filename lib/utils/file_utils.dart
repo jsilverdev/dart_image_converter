@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:diacritic/diacritic.dart';
-import 'package:path/path.dart' as path;
 import 'package:mime/mime.dart' as mime;
+import 'package:path/path.dart' as path;
+import 'package:pdfium_bindings/pdfium_bindings.dart';
 
 String getCustomFilePath({
   required String parentPath,
@@ -28,5 +31,19 @@ Map<String, String> validMimeTypes = {
   "ico" : "image/x-icon",
   "webp": "image/webp",
   "psd" : "image/vnd.adobe.photoshop",
-  // "pdf" : "application/pdf",
+  "pdf" : "application/pdf",
 };
+
+bool checkIfFileIsPdf(File file) {
+  return mime.lookupMimeType(file.path) == validMimeTypes['pdf'];
+}
+
+void imageFromPdfFile(File pdfFile, int width, int height, String outPath) {
+  PdfiumWrap()
+      .loadDocumentFromBytes(pdfFile.readAsBytesSync())
+      .loadPage(0)
+      .savePageAsJpg(outPath, width: width, height: height)
+      .closePage()
+      .closeDocument()
+      .dispose();
+}

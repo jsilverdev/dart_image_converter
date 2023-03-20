@@ -40,48 +40,52 @@ LogoFilesResult findLogoFilesByConfig(Configuration config) {
 
 Future<void> resizeImages(List<File> logoFiles, Configuration config) async {
   bool isSomePathSuccess = false;
-  for (var logoImage in logoFiles) {
+  for (var logoFile in logoFiles) {
     String newImagePath = getCustomFilePath(
       parentPath: config.resultsPath,
-      dirName: path.basename(logoImage.parent.path),
+      dirName: path.basename(logoFile.parent.path),
       extension: '.jpg',
     );
 
     if (config.skipFiles && File(newImagePath).existsSync()) continue;
 
-    final cmd = img.Command()
-      ..decodeImage(logoImage.readAsBytesSync())
-      ..copyResize(
-        width: config.width,
-        height: config.height,
-        interpolation: img.Interpolation.cubic,
-      )
-      ..filter((image) {
-        if (image.numChannels == 4) {
-          var imageDst = img.Image(
-            width: image.width,
-            height: image.height,
-          ); // default format is uint8 and numChannels is 3 (no alpha)
-          imageDst.clear(
-            img.ColorRgb8(255, 255, 255),
-          ); // clear the image with the color white.
-          return img.compositeImage(
-            imageDst,
-            image,
-          ); // alpha composite the image onto the white background
-        }
+    if (checkIfFileIsPdf(logoFile)) {
+      imageFromPdfFile(logoFile, config.width, config.height, newImagePath);
+    } else {
+      final cmd = img.Command()
+        ..decodeImage(logoFile.readAsBytesSync())
+        ..copyResize(
+          width: config.width,
+          height: config.height,
+          interpolation: img.Interpolation.cubic,
+        )
+        ..filter((image) {
+          if (image.numChannels == 4) {
+            var imageDst = img.Image(
+              width: image.width,
+              height: image.height,
+            ); // default format is uint8 and numChannels is 3 (no alpha)
+            imageDst.clear(
+              img.ColorRgb8(255, 255, 255),
+            ); // clear the image with the color white.
+            return img.compositeImage(
+              imageDst,
+              image,
+            ); // alpha composite the image onto the white background
+          }
 
-        return image;
-      })
-      ..encodeJpg()
-      ..writeToFile(newImagePath);
+          return image;
+        })
+        ..encodeJpg()
+        ..writeToFile(newImagePath);
 
-    await cmd.executeThread();
+      await cmd.executeThread();
+    }
 
     simplePrint("Image saved in: $newImagePath");
     isSomePathSuccess = true;
   }
-  if (isSomePathSuccess) simplePrint("No image saved");
+  if (!isSomePathSuccess) simplePrint("No image saved");
 }
 
 void checkFailedPaths(List<String> failedPaths, String searchTerm) {

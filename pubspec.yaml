@@ -18,3 +18,7 @@ dependencies:
   image: ^4.0.15
   mime: ^1.0.4
   path: ^1.8.3
+  pdfium_bindings:
+    git:
+      url: https://github.com/jsilverdev/pdfium_bindings.git
+      ref: 8de527e1f850f5833c4b4d8f1136e3acecd84028
