@@ -28,6 +28,7 @@ Map<String, String> validMimeTypes = {
   "png" : "image/png",
   "gif" : "image/gif",
   "bmp" : "image/bmp",
+  "tiff": "image/tiff",
   "ico" : "image/x-icon",
   "webp": "image/webp",
   "psd" : "image/vnd.adobe.photoshop",
