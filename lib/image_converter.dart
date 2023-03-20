@@ -6,7 +6,7 @@ import 'package:image/image.dart' as img;
 import 'models/configuration.dart';
 import 'models/process_image_result.dart';
 import 'utils/file_utils.dart';
-import 'utils/utils.dart';
+import 'utils/common.dart';
 
 LogoFilesResult findLogoFilesByConfig(Configuration config) {
   List<String> failedPaths = [];
@@ -14,15 +14,18 @@ LogoFilesResult findLogoFilesByConfig(Configuration config) {
   List<File> logoFiles = config.imageDir
       .listSync(recursive: false, followLinks: false)
       .whereType<Directory>()
+      .where((dir) => dir.path != config.resultsPath)
       .map(
         (dir) => dir
             .listSync(followLinks: false, recursive: false)
             .whereType<File>()
             .cast<File?>()
             .firstWhere(
-          (file) => file!.path.toLowerCase().contains(
-                config.searchTerm.toLowerCase(),
-              ),
+          (file) =>
+              file!.path.toLowerCase().contains(
+                    config.searchTerm.toLowerCase(),
+                  ) &&
+              isValidMimeType(file.path),
           orElse: () {
             failedPaths.add(dir.path);
             return null;
@@ -39,7 +42,7 @@ Future<void> resizeImages(List<File> logoFiles, Configuration config) async {
   bool isSomePathSuccess = false;
   for (var logoImage in logoFiles) {
     String newImagePath = getCustomFilePath(
-      parentPath: logoImage.parent.path,
+      parentPath: config.resultsPath,
       dirName: path.basename(logoImage.parent.path),
       extension: '.jpg',
     );
@@ -78,16 +81,15 @@ Future<void> resizeImages(List<File> logoFiles, Configuration config) async {
     simplePrint("Image saved in: $newImagePath");
     isSomePathSuccess = true;
   }
-  if(isSomePathSuccess) simplePrint("No image saved");
+  if (isSomePathSuccess) simplePrint("No image saved");
 }
 
 void checkFailedPaths(List<String> failedPaths, String searchTerm) {
-
   if (failedPaths.isEmpty) return;
 
   printSeparator();
   simplePrint(
-    'The following folders do not have any images with the word "$searchTerm":',
+    'The following folders do not have any images with the word "$searchTerm" or with admitted extensions ${validMimeTypes.keys}:',
   );
   for (var failedPathText in failedPaths) {
     simplePrint(failedPathText);

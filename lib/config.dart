@@ -21,6 +21,7 @@ Future<Configuration> loadConfig() async {
     searchTerm: env["SEARCH_TERM"],
     prefixFile: env["PREFIX_FILE"],
     skipFiles: (env["SKIP_FILES"] ?? '').tryParseBool(),
+    resultsFolder: env["RESULTS_FOLDER"],
   );
 }
 

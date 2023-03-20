@@ -7,15 +7,19 @@ class Configuration {
   final String searchTerm;
   final String prefixFile;
   final bool skipFiles;
+  late String resultsPath;
 
-  const Configuration(
-    this.imageDir,
-    this.width,
-    this.height,
-    this.searchTerm,
-    this.prefixFile,
-    this.skipFiles,
-  );
+  Configuration(
+    this.imageDir, {
+    required this.width,
+    required this.height,
+    required this.searchTerm,
+    required this.prefixFile,
+    required this.skipFiles,
+    required String resultsFolder,
+  }) {
+    resultsPath = "${imageDir.path}/$resultsFolder";
+  }
 
   factory Configuration.load(
     Directory imageDir, {
@@ -23,19 +27,21 @@ class Configuration {
     int? height,
     String? searchTerm,
     String? prefixFile,
-    bool? skipFiles
+    bool? skipFiles,
+    String? resultsFolder,
   }) {
     return Configuration(
       imageDir,
-      width ?? 400,
-      height ?? 400,
-      searchTerm ?? 'logo',
-      prefixFile ?? '',
-      skipFiles ?? false
+      width: width ?? 400,
+      height: height ?? 400,
+      searchTerm: searchTerm ?? 'logo',
+      prefixFile: prefixFile ?? '',
+      skipFiles: skipFiles ?? false,
+      resultsFolder: resultsFolder ?? "results",
     );
   }
 
   @override
   String toString() =>
-      "[imageDir Path]: ${imageDir.path}, [width]: $width, [height]: $height, [searchTerm]: $searchTerm, [prefixFile]: $prefixFile [skipFiles]: $skipFiles";
+      "[imageDir Path]: ${imageDir.path}, [width]: $width, [height]: $height, [searchTerm]: $searchTerm, [prefixFile]: $prefixFile [skipFiles]: $skipFiles, [resultsPath]: $resultsPath";
 }

@@ -1,5 +1,6 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:path/path.dart' as path;
+import 'package:mime/mime.dart' as mime;
 
 String getCustomFilePath({
   required String parentPath,
@@ -14,3 +15,18 @@ String getCustomFilePath({
 
   return path.join(parentPath, fileName);
 }
+
+bool isValidMimeType(String filePath) {
+  return validMimeTypes.containsValue(mime.lookupMimeType(filePath));
+}
+
+Map<String, String> validMimeTypes = {
+  "jpg" : "image/jpeg",
+  "png" : "image/png",
+  "gif" : "image/gif",
+  "bmp" : "image/bmp",
+  "ico" : "image/x-icon",
+  "webp": "image/webp",
+  "psd" : "image/vnd.adobe.photoshop",
+  // "pdf" : "application/pdf",
+};
