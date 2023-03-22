@@ -18,3 +18,11 @@ class DirectoryInvalidException extends AppException {
 class UserCancelException extends AppException {
   UserCancelException() : super("The user cancel the action");
 }
+
+class ImageDecodingException extends AppException {
+  ImageDecodingException(String path) : super("The image in the path $path failed to decode");
+}
+
+class FileNotValidException extends AppException {
+  FileNotValidException(String path) : super("The file in the path $path is not valid");
+}

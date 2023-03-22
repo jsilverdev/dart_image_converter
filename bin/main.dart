@@ -10,8 +10,8 @@ void main(List<String> arguments) async {
     Configuration config = await loadConfig();
     initialSetup(config.skipFiles);
 
-    LogoFilesResult result = findLogoFilesByConfig(config);
-    await resizeImages(result.logoFiles, config);
+    FilesResult result = findFilesByConfig(config);
+    processFiles(result.files, config);
 
     checkFailedPaths(result.failedPaths, config.searchTerm);
   } catch (e) {

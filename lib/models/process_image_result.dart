@@ -1,8 +1,8 @@
 import 'dart:io';
 
-class LogoFilesResult {
+class FilesResult {
   final List<String> failedPaths;
-  final List<File> logoFiles;
+  final List<File> files;
 
-  LogoFilesResult(this.failedPaths, this.logoFiles);
+  FilesResult(this.failedPaths, this.files);
 }

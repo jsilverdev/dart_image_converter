@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:diacritic/diacritic.dart';
 import 'package:mime/mime.dart' as mime;
 import 'package:path/path.dart' as path;
-import 'package:pdfium_bindings/pdfium_bindings.dart';
 
 String getCustomFilePath({
   required String parentPath,
@@ -19,8 +18,8 @@ String getCustomFilePath({
   return path.join(parentPath, fileName);
 }
 
-bool isValidMimeType(String filePath) {
-  return validMimeTypes.containsValue(mime.lookupMimeType(filePath));
+bool isValidMimeType(File file) {
+  return validMimeTypes.containsValue(mime.lookupMimeType(file.path));
 }
 
 Map<String, String> validMimeTypes = {
@@ -35,16 +34,6 @@ Map<String, String> validMimeTypes = {
   "pdf" : "application/pdf",
 };
 
-bool checkFileType(File file, String fileType) {
-  return mime.lookupMimeType(file.path) == validMimeTypes[fileType];
-}
-
-void imageFromPdfFile(File pdfFile, int width, int height, String outPath) {
-  PdfiumWrap()
-      .loadDocumentFromBytes(pdfFile.readAsBytesSync())
-      .loadPage(0)
-      .savePageAsJpg(outPath, width: width, height: height)
-      .closePage()
-      .closeDocument()
-      .dispose();
+String getFileType(File file) {
+  return mime.lookupMimeType(file.path)!.split("/").first;
 }
