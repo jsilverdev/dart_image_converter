@@ -236,12 +236,11 @@ packages:
   pdfium_bindings:
     dependency: "direct main"
     description:
-      path: "."
-      ref: upgrade-dependencies
-      resolved-ref: "96502e22e29239828aa4d30dc7e1889357a939b4"
-      url: "https://github.com/jsilverdev/pdfium_bindings.git"
-    source: git
-    version: "1.4.0"
+      name: pdfium_bindings
+      sha256: "8c07bb5dc391944566545bd4d4821f76130738b8ac8f1566af82479fa3b8567e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   petitparser:
     dependency: transitive
     description:
