@@ -54,11 +54,6 @@ void main() {
       final imageExtension = "png";
       final notImageExtension = "pdf";
 
-      when(() => fileUtils.validFileExtensions).thenReturn([
-        imageExtension,
-        notImageExtension
-      ]);
-
       //act
       final isImage1 = isImageFileType("file.$imageExtension");
       final isImage2 = isImageFileType("file.$notImageExtension");
