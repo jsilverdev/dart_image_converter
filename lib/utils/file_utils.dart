@@ -13,7 +13,7 @@ String sanitizeText(
 
 bool isValidExtension(String filePath) {
   return fileUtils.validFileExtensions.contains(
-    path.extension(filePath).substring(1),
+    path.extension(filePath).substring(1).toLowerCase(),
   );
 }
 

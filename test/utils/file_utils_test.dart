@@ -39,11 +39,13 @@ void main() {
 
       //act
       bool isValid1 = isValidExtension("file.$validExtension");
-      bool isValid2 = isValidExtension("file.$invalidExtension");
+      bool isValid2 = isValidExtension("file.${validExtension.toUpperCase()}");
+      bool isValid3 = isValidExtension("file.$invalidExtension");
 
       //assert
       expect(isValid1, equals(true));
-      expect(isValid2, equals(false));
+      expect(isValid2, equals(true));
+      expect(isValid3, equals(false));
     },
   );
 
@@ -56,11 +58,13 @@ void main() {
 
       //act
       final isImage1 = isImageFileType("file.$imageExtension");
-      final isImage2 = isImageFileType("file.$notImageExtension");
+      final isImage2 = isImageFileType("file.${imageExtension.toUpperCase()}");
+      final isImage3 = isImageFileType("file.$notImageExtension");
 
       //assert
       expect(isImage1, equals(true));
-      expect(isImage2, equals(false));
+      expect(isImage2, equals(true));
+      expect(isImage3, equals(false));
     },
   );
 }
