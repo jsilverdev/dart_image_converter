@@ -25,7 +25,7 @@ FilesResult findFilesByConfig(Configuration config) {
               file!.path.toLowerCase().contains(
                     config.searchTerm.toLowerCase(),
                   ) &&
-              isValidMimeType(file),
+              isValidExtension(file.path),
           orElse: () {
             failedPaths.add(dir.path);
             return null;
@@ -41,9 +41,9 @@ FilesResult findFilesByConfig(Configuration config) {
 void processFiles(List<File> files, Configuration config) {
   bool isSomePathSuccess = false;
   for (var file in files) {
-    String newImagePath = getCustomFilePath(
+    String newImagePath = _getCustomFilePath(
       parentPath: config.resultsPath,
-      dirName: path.basename(file.parent.path),
+      name: path.basename(file.parent.path),
       extension: '.jpg',
     );
 
@@ -60,12 +60,27 @@ void processFiles(List<File> files, Configuration config) {
   if (!isSomePathSuccess) simplePrint("No image saved");
 }
 
+String _getCustomFilePath({
+  required String parentPath,
+  required String name,
+  required String extension,
+  String prefixFile = '',
+}) {
+  String sanitizedFileName = sanitizeText(name) + extension;
+
+  if (prefixFile.isNotEmpty) {
+    sanitizedFileName = "${prefixFile.toUpperCase()}_$sanitizedFileName";
+  }
+
+  return path.join(parentPath, sanitizedFileName);
+}
+
 void checkFailedPaths(List<String> failedPaths, String searchTerm) {
   if (failedPaths.isEmpty) return;
 
   printSeparator();
   simplePrint(
-    'The following folders do not have any images with the word "$searchTerm" or with admitted extensions ${validMimeTypes.keys}:',
+    'The following folders do not have any images with the word "$searchTerm" or with admitted extensions ${fileUtils.validFileExtensions}:',
   );
   for (var failedPathText in failedPaths) {
     simplePrint(failedPathText);

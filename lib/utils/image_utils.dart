@@ -36,7 +36,7 @@ img.Image _getImageFromImageFile(File imageFile) {
 }
 
 img.Image _fileToImage(File file) {
-  if (getFileType(file) == "image") {
+  if (isImageFileType(file.path)) {
     return _getImageFromImageFile(file);
   } else if (path.extension(file.path) == ".pdf") {
     return _getImageFromPdfFile(file);
