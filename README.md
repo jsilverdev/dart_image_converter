@@ -46,12 +46,6 @@ Go to the project directory
   cd dart_image_converter
 ```
 
-Install dependencies
-
-```bash
-  dart pub get
-```
-
 Create .env from the .env.example
 
 ```bash
@@ -64,11 +58,19 @@ Configure the `IMAGES_PATH` in the .env file
   IMAGES_PATH="path/to/images_path"
 ```
 
-Start the cli app
+Install dependencies (if `dart` its installed)
+
+```bash
+  dart pub get
+```
+
+Start the cli app (if `dart` its installed)
 
 ```bash
   dart run bin/main.dart
 ```
+
+If you are in Windows simply double click in `run_win-x64.bat` file
 
 ## Running Tests
 
@@ -77,12 +79,6 @@ To run tests, run the following command
 ```bash
   dart test
 ```
-
-## Run compiled files
-
-### Windows
-- Previously configure the .env file and the simply click in the `run_win-x64` file
-
 
 ## Roadmap
 
