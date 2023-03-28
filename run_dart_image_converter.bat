@@ -1,2 +1,0 @@
-dart_image_converter_x64.exe
-pause
