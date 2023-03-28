@@ -14,6 +14,6 @@ void main(List<String> arguments) async {
     );
 
   } catch (e) {
-    simpleErrorPrint(e);
+    simpleErrorPrint(e.toString());
   }
 }

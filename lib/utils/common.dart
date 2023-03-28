@@ -1,12 +1,12 @@
 import 'dart:io';
 
-void simplePrint(Object? object) {
-  stdout.writeln(object);
+void simplePrint(String text) {
+  stdout.writeln(text);
 }
 
 
-void simpleErrorPrint(Object? object) {
-  stderr.writeln(object);
+void simpleErrorPrint(String text) {
+  stderr.writeln(text);
 }
 
 void printSeparator() {
