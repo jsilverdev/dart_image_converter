@@ -7,8 +7,8 @@ abstract class AppException implements Exception {
   String toString() => _message;
 }
 
-class NullException extends AppException {
-  NullException() : super("The value can't be null");
+class NullOrEmptyException extends AppException {
+  NullOrEmptyException() : super("The value can't be null or empty");
 }
 
 class DirectoryInvalidException extends AppException {

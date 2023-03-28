@@ -3,11 +3,25 @@ import 'dart:io';
 import 'package:dotenv/dotenv.dart';
 import 'errors/exceptions.dart';
 import 'models/configuration.dart';
+import 'package:path/path.dart' as path;
 
-Future<Configuration> loadConfig() async {
-  final DotEnv env = DotEnv(includePlatformEnvironment: false)..load();
+Config config = Config();
 
-  String imagePath = env["IMAGES_PATH"] ?? (throw NullException());
+class Config {
+
+  DotEnv get env => _env;
+
+  final DotEnv _env = DotEnv(includePlatformEnvironment: false)..load();
+}
+
+Future<Configuration> loadConfiguration() async {
+
+  String? optionalImagePath = config.env["IMAGES_PATH"];
+  if(optionalImagePath == null || optionalImagePath.isEmpty) {
+    throw NullOrEmptyException();
+  }
+
+  String imagePath = path.absolute(optionalImagePath);
 
   bool isDir = await FileSystemEntity.isDirectory(imagePath);
   if (!isDir) {
@@ -16,12 +30,12 @@ Future<Configuration> loadConfig() async {
 
   return Configuration.load(
     Directory(imagePath),
-    width: int.tryParse(env["WIDTH"] ?? ''),
-    height: int.tryParse(env["HEIGHT"] ?? ''),
-    searchTerm: env["SEARCH_TERM"],
-    prefixFile: env["PREFIX_FILE"],
-    skipFiles: (env["SKIP_FILES"] ?? '').tryParseBool(),
-    resultsFolder: env["RESULTS_FOLDER"],
+    width: int.tryParse(config.env["WIDTH"] ?? ''),
+    height: int.tryParse(config.env["HEIGHT"] ?? ''),
+    searchTerm: config.env["SEARCH_TERM"],
+    prefixFile: config.env["PREFIX_FILE"],
+    skipFiles: (config.env["SKIP_FILES"] ?? '').tryParseBool(),
+    resultsFolder: config.env["RESULTS_FOLDER"],
   );
 }
 
