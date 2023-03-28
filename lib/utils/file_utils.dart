@@ -26,6 +26,7 @@ class FileUtils {
   List<String> get validFileExtensions => fileUtils._validFileExtensions;
 
   final List<String> _validFileExtensions = [
+    "jpeg",
     "jpg",
     "png",
     "gif",

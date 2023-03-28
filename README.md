@@ -12,7 +12,7 @@ A command-line application to transform images and PDF's to resized jpg's images
 - Run without need to install dart (compiled files)
 - Cross platform (Windows, Linux)
 - Easily customizable
-- Support many formats: (jpg, png, gif, bmp, tiff, ico, webp, psd, pdf)
+- Support many formats: (jpg, jpeg, png, gif, bmp, tiff, ico, webp, psd, pdf)
 
 ## Environment Variables
 
