@@ -38,26 +38,28 @@ FilesResult findFilesByConfig(Configuration config) {
   return FilesResult(failedPaths, files);
 }
 
-void processFiles(List<File> files, Configuration config) {
+void processFiles(FilesResult result, Configuration configuration) {
   bool isSomePathSuccess = false;
-  for (var file in files) {
+  for (var file in result.files) {
     String newImagePath = _getCustomFilePath(
-      parentPath: config.resultsPath,
+      parentPath: configuration.resultsPath,
       name: path.basename(file.parent.path),
       extension: '.jpg',
     );
 
-    if (config.skipFiles && File(newImagePath).existsSync()) continue;
+    if (configuration.skipFiles && File(newImagePath).existsSync()) continue;
 
     resizeAndSaveFileAsJpg(
       file,
-      width: config.width,
-      height: config.height,
+      width: configuration.width,
+      height: configuration.height,
       toSavePath: newImagePath,
     );
     isSomePathSuccess = true;
   }
   if (!isSomePathSuccess) simplePrint("No image saved");
+
+  _checkFailedPaths(result.failedPaths, configuration.searchTerm);
 }
 
 String _getCustomFilePath({
@@ -75,7 +77,7 @@ String _getCustomFilePath({
   return path.join(parentPath, sanitizedFileName);
 }
 
-void checkFailedPaths(List<String> failedPaths, String searchTerm) {
+void _checkFailedPaths(List<String> failedPaths, String searchTerm) {
   if (failedPaths.isEmpty) return;
 
   printSeparator();
