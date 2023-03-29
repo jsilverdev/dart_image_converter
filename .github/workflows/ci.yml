@@ -7,7 +7,8 @@ on:
     branches: ["main"]
 
 env:
-  VERSION: "v1.1.1"
+  VERSION_NUMBER: 1.1.2
+  VERSION: "v${{VERSION_NUMBER}}"
 
 jobs:
   test-and-build:
@@ -38,7 +39,7 @@ jobs:
       - name: Clear windows binary folder
         if: matrix.os == 'windows-latest'
         run: |
-          Get-ChildItem -Path binaries -File -Exclude .gitkeep -Force | Remove-Item -Recurse -Force
+          Get-ChildItem -Path binaries -Recurse -File -Exclude .gitkeep -Force | Remove-Item -Recurse -Force
 
       - name: Compile linux executable
         if: matrix.os == 'ubuntu-latest'
@@ -77,14 +78,18 @@ jobs:
         run: |
           find binaries ! -name '.gitkeep' -type f -exec chmod +x {} +
 
+      - name: Increase version in files
+        run: |
+          sed -i "s/version:.*/version: ${{ env.VERSION_NUMBER }}/g" pubspec.yaml
+          sed -i "s/binaries\/linux\/[^;]*/binaries\/linux\/${{ env.VERSION }}-x64/g" run_linux-x64.sh
+          sed -i 's/binaries\\windows\\[^-]*-x64.exe/binaries\\windows\\${{ env.VERSION }}-x64.exe/g' run_win-x64.bat
+
       - name: Add and commit compiled files
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add binaries/
           git commit -m "Compiled executable files for version ${{ env.VERSION }}"
-          git tag ${{ env.VERSION }}
-          git push origin HEAD --tags
 
       - name: Create and publish release
         uses: marvinpinto/action-automatic-releases@latest
