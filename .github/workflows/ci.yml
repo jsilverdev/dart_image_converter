@@ -34,11 +34,11 @@ jobs:
       - name: Clear linux binary folder
         if: matrix.os == 'ubuntu-latest'
         run: |
-          find binaries/linux ! -name '.gitkeep' -type f -exec rm -f {} +
+          find binaries ! -name '.gitkeep' -type f -exec rm -f {} +
       - name: Clear windows binary folder
         if: matrix.os == 'windows-latest'
         run: |
-          Get-ChildItem -Path binaries/windows -Exclude .gitkeep -Force | Remove-Item -Recurse -Force
+          Get-ChildItem -Path binaries -Exclude .gitkeep -Force | Remove-Item -Recurse -Force
 
       - name: Compile linux executable
         if: matrix.os == 'ubuntu-latest'
@@ -61,11 +61,21 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.test-and-build.result == 'success' }}
     steps:
+      - uses: actions/checkout@v3
+
+      - name: Remove all binaries
+        run: |
+          rm -rf binaries
+
       - name: Download compiled files
         uses: actions/download-artifact@v3
         with:
           name: compiled-files
           path: binaries/
+
+      - name: Make executable binary files
+        run: |
+          find binaries ! -name '.gitkeep' -type f -exec chmod +x {} +
 
       - name: Add and commit compiled files
         run: |
