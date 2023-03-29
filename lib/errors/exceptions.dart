@@ -12,7 +12,9 @@ class NullOrEmptyException extends AppException {
 }
 
 class DirectoryInvalidException extends AppException {
-  DirectoryInvalidException(String path) : super("The path ($path) is not a valid directory");
+  DirectoryInvalidException(
+    String path,
+  ) : super("The path ($path) is not a valid directory");
 }
 
 class UserCancelException extends AppException {
@@ -20,9 +22,20 @@ class UserCancelException extends AppException {
 }
 
 class ImageDecodingException extends AppException {
-  ImageDecodingException(String path) : super("The image in the path $path failed to decode");
+  ImageDecodingException(
+    String path,
+  ) : super("The image in $path failed to decode");
 }
 
 class FileNotValidException extends AppException {
-  FileNotValidException(String path) : super("The file in the path $path is not valid");
+  FileNotValidException(
+    String path,
+  ) : super("The file in $path is not valid");
+}
+
+class ArchNotSupportedException extends AppException {
+  ArchNotSupportedException({
+    required String path,
+    required String arch,
+  }) : super("The file in $path can't be converted because $arch is not currently supported");
 }

@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:image/image.dart' as img;
@@ -9,8 +10,26 @@ import 'common.dart';
 import 'file_utils.dart';
 
 img.Image _getImageFromPdfFile(File pdfFile) {
-  var pdfWrap =
-      PdfiumWrap().loadDocumentFromBytes(pdfFile.readAsBytesSync()).loadPage(0);
+  String lib = '';
+
+  switch (Abi.current()) {
+    case Abi.windowsX64:
+      lib = 'pdfium_x64.dll';
+      break;
+    case Abi.linuxX64:
+      lib = 'libpdfium_x64.so';
+      break;
+    default:
+      throw ArchNotSupportedException(
+        path: pdfFile.path,
+        arch: Abi.current().toString(),
+      );
+  }
+
+  final libPath = path.join(Directory.current.path, lib);
+  var pdfWrap = PdfiumWrap(libraryPath: libPath)
+      .loadDocumentFromBytes(pdfFile.readAsBytesSync())
+      .loadPage(0);
 
   final width = (pdfWrap.getPageWidth()).round();
   final height = (pdfWrap.getPageHeight()).round();
@@ -50,7 +69,6 @@ void resizeAndSaveFileAsJpg(
   required int height,
   required String toSavePath,
 }) {
-
   String message = "";
   try {
     final image = img.copyResize(
