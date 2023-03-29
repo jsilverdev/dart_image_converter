@@ -39,6 +39,9 @@ FilesResult findFilesByConfig(Configuration config) {
 }
 
 void processFiles(FilesResult result, Configuration configuration) {
+
+  _createResultsFolder(configuration.resultsPath);
+
   bool isSomePathSuccess = false;
   for (var file in result.files) {
     String newImagePath = _getCustomFilePath(
@@ -87,4 +90,12 @@ void _checkFailedPaths(List<String> failedPaths, String searchTerm) {
   for (var failedPathText in failedPaths) {
     simplePrint(failedPathText);
   }
+}
+
+void _createResultsFolder(String resultsPath) {
+  final dir = Directory(resultsPath);
+
+  if(dir.existsSync()) return;
+
+  dir.createSync(recursive: true);
 }
