@@ -24,7 +24,7 @@ jobs:
           - os: ubuntu-latest
             binary_folder: linux
             binary_extension: ''
-          - os: macos-latest
+          - os: windows-latest
             binary_folder: windows
             binary_extension: '.exe'
       fail-fast: false
