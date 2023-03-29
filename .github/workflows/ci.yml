@@ -4,18 +4,18 @@ on:
   push:
     branches: ["main"]
     paths:
-      - '**.dart'
-      - '**.so'
-      - '**.dll'
-      - 'pubspec.yaml'
-      - 'pubspec.lock'
-      - '.github/workflows/ci.yml'
+      - "**.dart"
+      - "**.so"
+      - "**.dll"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - ".github/workflows/ci.yml"
 
 env:
-  VERSION_NUMBER: 1.2.0
+  VERSION_NUMBER: 1.2.1
 
 jobs:
-  test-and-build:
+  compile:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -23,39 +23,18 @@ jobs:
         include:
           - os: ubuntu-latest
             binary_prefix: linux
-            binary_extension: ''
+            binary_extension: ""
           - os: windows-latest
             binary_prefix: win
-            binary_extension: '.exe'
+            binary_extension: ".exe"
       fail-fast: false
 
     steps:
       - uses: actions/checkout@v3
 
-      - id: restore-cache-deps
-        name: Restore Cache dependencies
-        uses: actions/cache/restore@v3
+      - uses: ./.github/workflows/get-deps.yml
         with:
-          key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.lock') }}
-          path: ~/.pub-cache
-
-      - uses: dart-lang/setup-dart@v1
-
-      - name: Install dependencies
-        run: dart pub get
-
-      - name: Save Cache dependencies
-        uses: actions/cache/save@v3
-        if: steps.restore-cache-deps.outputs.cache-hit != 'true'
-        with:
-          key: ${{ steps.restore-cache-deps.outputs.cache-primary-key }}
-          path: ~/.pub-cache
-
-      - name: Analyze project source
-        run: dart analyze
-
-      - name: Run tests
-        run: dart test
+          operating_system: ${{ matrix.os }}
 
       - name: Compile executable
         run: |
@@ -70,9 +49,9 @@ jobs:
           retention-days: 1
 
   create-release:
-    needs: test-and-build
+    needs: compile
     runs-on: ubuntu-latest
-    if: ${{ needs.test-and-build.result == 'success' }}
+    if: ${{ needs.compile.result == 'success' }}
     steps:
       - uses: actions/checkout@v3
 

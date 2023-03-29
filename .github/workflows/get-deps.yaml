@@ -1,0 +1,36 @@
+name: Analyze and Test
+
+on:
+  workflow_call:
+    inputs:
+      operating_system:
+        required: true
+        type: string
+
+jobs:
+  analyze-and-test:
+    runs-on: ${{ inputs.operating_system }}
+    steps:
+      - id: restore-cache-deps
+        name: Restore Cache dependencies
+        uses: actions/cache/restore@v3
+        with:
+          key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.lock') }}
+          path: |
+            ~/.pub-cache
+            .dart-tool
+
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        if: steps.restore-cache-deps.outputs.cache-hit != 'true'
+        run: dart pub get
+
+      - name: Save Cache dependencies
+        uses: actions/cache/save@v3
+        if: steps.restore-cache-deps.outputs.cache-hit != 'true'
+        with:
+          key: ${{ steps.restore-cache-deps.outputs.cache-primary-key }}
+          path: |
+            ~/.pub-cache
+            .dart-tool
