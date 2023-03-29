@@ -1,4 +1,4 @@
-name: Analyze and Test
+name: Get Dependencies
 
 on:
   workflow_call:
