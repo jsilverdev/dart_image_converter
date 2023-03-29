@@ -89,6 +89,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add binaries/
           git commit -m "Compiled executable files for version v${{ env.VERSION_NUMBER }}"
+          git push origin HEAD
 
       - name: Create and publish release
         uses: marvinpinto/action-automatic-releases@latest
