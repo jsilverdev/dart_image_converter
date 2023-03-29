@@ -41,9 +41,9 @@ jobs:
       - name: Clear binary folders
         run: |
           if [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
-            find . ! -name '.gitkeep' -type f -exec rm -f {} +
+            find binaries/linux ! -name '.gitkeep' -type f -exec rm -f {} +
           elif [ ${{ matrix.os }} == 'windows-latest' ]; then
-            for /f "delims=" %i in ('dir /b /a-d /s ^| findstr /v /c:".gitkeep"') do del /f "%i"
+            for /f "delims=" %i in ('dir /b /a-d /s binaries\windows ^| findstr /v /c:".gitkeep"') do del /f "%i"
           fi
 
       - name: Compile executable
@@ -55,14 +55,18 @@ jobs:
           fi
 
       - name: Add and commit compiled files
+        if: ${{ job.status == 'success' }}
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add binaries/
-          git commit -m "Compiled executable files for version ${{ env.VERSION }}"
-          git tag ${{ env.VERSION }}
-          git push origin HEAD --tags
+          git commit -m "Compiled executable files for version ${{ env.VERSION }} for ${{ matrix.os }}"
 
+  create-release:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    if: ${{ needs.test-and-build.result == 'success' }}
+    steps:
       - name: Create and publish release
         uses: marvinpinto/action-automatic-releases@latest
         with:
@@ -70,4 +74,3 @@ jobs:
           automatic_release_tag: ${{ env.VERSION }}
           prerelease: false
           title: Release ${{ env.VERSION }}
-          files: binaries/**
