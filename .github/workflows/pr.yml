@@ -1,0 +1,34 @@
+name: PR Review Workflow
+
+on:
+  pull_request:
+    types: [reopened, ready_for_review]
+    branches: [main]
+    paths:
+      - "**.dart"
+      - "**.so"
+      - "**.dll"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+
+jobs:
+  pr-review:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: ./.github/workflows/get-deps.yml
+        with:
+          operating_system: ${{ matrix.os }}
+
+      - name: Analyze project source
+        run: dart analyze
+
+      - name: Run tests
+        run: dart test
