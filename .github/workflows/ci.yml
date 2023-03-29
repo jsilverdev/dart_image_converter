@@ -1,42 +1,74 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Dart
+name: Build and Release
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
+
+env:
+  VERSION: "v1.1.0"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test-and-build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v3
 
-      # Note: This workflow uses the latest stable version of the Dart SDK.
-      # You can specify other versions if desired, see documentation here:
-      # https://github.com/dart-lang/setup-dart/blob/main/README.md
-      # - uses: dart-lang/setup-dart@v1
-      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        id: cache-dependencies
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - uses: dart-lang/setup-dart@v1
 
       - name: Install dependencies
         run: dart pub get
 
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
-
-      # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
         run: dart analyze
 
-      # Your project will need to have tests in test/ and a dependency on
-      # package:test for this step to succeed. Note that Flutter projects will
-      # want to change this to 'flutter test'.
       - name: Run tests
         run: dart test
+
+      - name: Clear binary folders
+        run: |
+          cd binaries/linux
+          find . ! -name '.gitkeep' -type f -exec rm -f {} +
+          cd ../windows
+          find . ! -name '.gitkeep' -type f -exec rm -f {} +
+
+      - name: Compile executable
+        run: |
+          if [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
+            dart compile exe bin/main.dart -o binaries/linux/${{ env.VERSION }}-x64
+          elif [ ${{ matrix.os }} == 'windows-latest' ]; then
+            dart compile exe bin/main.dart -o binaries/windows/${{ env.VERSION }}-x64.exe
+          fi
+
+      - name: Add and commit compiled files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add binaries/
+          git commit -m "Compiled executable files for version ${{ env.VERSION }}"
+          git tag ${{ env.VERSION }}
+          git push origin HEAD --tags
+
+      - name: Create and publish release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.ACCESS_TOKEN }}
+          automatic_release_tag: ${{ env.VERSION }}
+          prerelease: false
+          title: Release ${{ env.VERSION }}
+          files: binaries/**
