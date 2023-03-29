@@ -3,7 +3,7 @@
 [![GitHub release](https://img.shields.io/github/release/jsilverdev/dart_image_converter?include_prereleases=&sort=semver&color=blue)](https://github.com/jsilverdev/dart_image_converter/releases/)
 [![License](https://img.shields.io/badge/License-MIT-blue)](#license)
 [![issues - dart_image_converter](https://img.shields.io/github/issues/jsilverdev/dart_image_converter)](https://github.com/jsilverdev/dart_image_converter/issues)
-![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/jsilverdev/dart_image_converter/latest)
+[![Build and Release](https://github.com/jsilverdev/dart_image_converter/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jsilverdev/dart_image_converter/actions/workflows/ci.yml)
 
 Simple command-line application to transform images and PDF's to resized jpg's images built with Dart
 
@@ -70,7 +70,9 @@ Start the cli app (if `dart` its installed)
   dart run bin/main.dart
 ```
 
-If you are in Windows simply double click in `run_win-x64.bat` file
+If you don't have dart installed you can:
+  - On `Windows` simply double click in `run_win-x64.bat` file
+  - On `Linux` simply double click in `run_linux-x64.sh` file
 
 ## Running Tests
 
