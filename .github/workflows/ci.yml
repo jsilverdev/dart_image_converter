@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 env:
-  VERSION: "v1.1.0"
+  VERSION: "v1.1.1"
 
 jobs:
   test-and-build:
@@ -22,12 +22,10 @@ jobs:
 
       - name: Cache dependencies
         uses: actions/cache@v2
-        id: cache-dependencies
+        id: cache-dart-deps
         with:
           path: ~/.pub-cache
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pub-
+          key: ${{ runner.os }}-dart-${{ hashFiles('**/pubspec.lock') }}
 
       - uses: dart-lang/setup-dart@v1
 
@@ -42,10 +40,11 @@ jobs:
 
       - name: Clear binary folders
         run: |
-          cd binaries/linux
-          find . ! -name '.gitkeep' -type f -exec rm -f {} +
-          cd ../windows
-          find . ! -name '.gitkeep' -type f -exec rm -f {} +
+          if [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
+            find . ! -name '.gitkeep' -type f -exec rm -f {} +
+          elif [ ${{ matrix.os }} == 'windows-latest' ]; then
+            for /f "delims=" %i in ('dir /b /a-d /s ^| findstr /v /c:".gitkeep"') do del /f "%i"
+          fi
 
       - name: Compile executable
         run: |
