@@ -12,7 +12,7 @@ on:
       - ".github/workflows/ci.yml"
 
 env:
-  VERSION_NUMBER: 1.2.1
+  VERSION_NUMBER: 1.2.2
 
 jobs:
   compile:
@@ -95,16 +95,23 @@ jobs:
           sed -i "s|binaries/linux-[^;]*|binaries/linux-v${{ env.VERSION_NUMBER }}-x64|g" run_linux-x64.sh
           sed -i "s|binaries\\\\win-[^\\\\]*-x64.exe|binaries\\\\win-v${{ env.VERSION_NUMBER }}-x64.exe|g" run_win-x64.bat
 
-      - name: Add and commit compiled files
+      - name: Check if branch exists in remote
+        run: |
+          if git ls-remote --heads origin v${{ env.VERSION_NUMBER }} | grep -q v${{ env.VERSION_NUMBER }}; then
+            echo "Branch v${{ env.VERSION_NUMBER }} already exists in remote repository"
+            exit 1
+          fi
+
+      - name: Create and push branch
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add .
+          git checkout -b v${{ env.VERSION_NUMBER }}
           git commit -m "Upgrade to version v${{ env.VERSION_NUMBER }}"
-          git tag v${{ env.VERSION_NUMBER }}
-          git push origin HEAD --tags
+          git push origin v${{ env.VERSION_NUMBER }}
 
       - name: Create and publish release
         uses: ncipollo/release-action@v1
         with:
+          commit: v${{ env.VERSION_NUMBER }}
           tag: v${{ env.VERSION_NUMBER }}
