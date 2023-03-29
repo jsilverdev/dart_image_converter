@@ -35,33 +35,47 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           find binaries/linux ! -name '.gitkeep' -type f -exec rm -f {} +
-
       - name: Clear windows binary folder
         if: matrix.os == 'windows-latest'
         run: |
           Get-ChildItem -Path binaries/windows -Exclude .gitkeep -Force | Remove-Item -Recurse -Force
 
-      - name: Compile executable
+      - name: Compile linux executable
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          if [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
-            dart compile exe bin/main.dart -o binaries/linux/${{ env.VERSION }}-x64
-          elif [ ${{ matrix.os }} == 'windows-latest' ]; then
-            dart compile exe bin/main.dart -o binaries/windows/${{ env.VERSION }}-x64.exe
-          fi
+          dart compile exe bin/main.dart -o binaries/linux/${{ env.VERSION }}-x64
+      - name: Compile windows executable
+        if: matrix.os == 'windows-latest'
+        run: |
+          dart compile exe bin/main.dart -o binaries/windows/${{ env.VERSION }}-x64.exe
 
-      - name: Add and commit compiled files
+      - name: Upload compiled files
         if: ${{ job.status == 'success' }}
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add binaries/
-          git commit -m "Compiled executable files for version ${{ env.VERSION }} for ${{ matrix.os }}"
+        uses: actions/upload-artifact@v3
+        with:
+          name: compiled-files
+          path: binaries/
 
   create-release:
     needs: test-and-build
     runs-on: ubuntu-latest
     if: ${{ needs.test-and-build.result == 'success' }}
     steps:
+      - name: Download compiled files
+        uses: actions/download-artifact@v3
+        with:
+          name: compiled-files
+          path: binaries/
+
+      - name: Add and commit compiled files
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add binaries/
+          git commit -m "Compiled executable files for version ${{ env.VERSION }}"
+          git tag ${{ env.VERSION }}
+          git push origin HEAD --tags
+
       - name: Create and publish release
         uses: marvinpinto/action-automatic-releases@latest
         with:
