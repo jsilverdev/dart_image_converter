@@ -5,7 +5,7 @@
 [![issues - dart_image_converter](https://img.shields.io/github/issues/jsilverdev/dart_image_converter)](https://github.com/jsilverdev/dart_image_converter/issues)
 ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/jsilverdev/dart_image_converter/latest)
 
-A command-line application to transform images and PDF's to resized jpg's images built with Dart
+Simple command-line application to transform images and PDF's to resized jpg's images built with Dart
 
 ## Features
 
