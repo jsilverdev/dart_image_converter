@@ -1,8 +1,8 @@
-name: PR Review Workflow
+name: PR Review
 
 on:
   pull_request:
-    types: [reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
     paths:
       - "**.dart"
       - "**.so"
