@@ -2,10 +2,16 @@ name: Check version
 
 on:
   workflow_call:
+    outputs:
+      version_number:
+        description: "Version Number from pubspec.yaml"
+        value: ${{jobs.check-version.outputs.version_number}}
 
 jobs:
   check-version:
     runs-on: ubuntu-latest
+    outputs:
+      version_number: ${{ steps.get_version_number.outputs.result }}
 
     steps:
       - name: Checkout code
@@ -15,7 +21,7 @@ jobs:
         id: get_version_number
         uses: mikefarah/yq@master
         with:
-          cmd: yq '.env.["VERSION_NUMBER"]' '.github/workflows/ci.yml'
+          cmd: yq '.["version"]' 'pubspec.yaml'
 
       - name: Check if the version on CI is different of the latest release
         run: |
