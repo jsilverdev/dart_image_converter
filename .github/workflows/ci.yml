@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 env:
-  VERSION_NUMBER: 1.2.4
+  VERSION_NUMBER: 1.2.5
 
 jobs:
   compile:
@@ -91,7 +91,7 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "Upgrade to version v${{ env.VERSION_NUMBER }}"
-          git push origin main
+          git push origin HEAD
 
       - name: Create and publish release
         uses: ncipollo/release-action@v1
