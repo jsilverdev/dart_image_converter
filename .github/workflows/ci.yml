@@ -3,15 +3,9 @@ name: Build and Release
 on:
   push:
     branches: ["main"]
-    paths:
-      - "**.dart"
-      - "**.so"
-      - "**.dll"
-      - "pubspec.lock"
-      - ".github/workflows/*.yml"
 
 env:
-  VERSION_NUMBER: 1.2.6
+  VERSION_NUMBER: 1.2.7
 
 jobs:
   check-version:
@@ -103,7 +97,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "Upgrade to version v${{ env.VERSION_NUMBER }}"
+          git commit -m "Upgrade to version v${{ env.VERSION_NUMBER }}\n\nskip-checks: true"
           git push origin HEAD
 
       - name: Create and publish release
