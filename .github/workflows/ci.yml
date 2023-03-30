@@ -85,8 +85,6 @@ jobs:
 
       - name: Create and push branch
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
           git remote set-url origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}.git
           git add .
           git commit -m "Upgrade to version v${{ env.VERSION_NUMBER }}"
