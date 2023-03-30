@@ -3,12 +3,25 @@ name: Build and Release
 on:
   push:
     branches: ["main"]
+    paths:
+      - "**.dart"
+      - "**.so"
+      - "**.dll"
+      - "pubspec.lock"
+      - ".github/workflows/*.yml"
 
 env:
-  VERSION_NUMBER: 1.2.5
+  VERSION_NUMBER: 1.2.6
 
 jobs:
+  check-version:
+    uses: ./.github/workflows/check-version.yml
+    with:
+      ref: ${{ github.event.ref }}
+
   compile:
+    needs: check-version
+    if: ${{ needs.check-version.result == 'success' }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
