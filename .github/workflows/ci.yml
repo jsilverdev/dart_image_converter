@@ -3,16 +3,9 @@ name: Build and Release
 on:
   push:
     branches: ["main"]
-    paths:
-      - "**.dart"
-      - "**.so"
-      - "**.dll"
-      - "pubspec.yaml"
-      - "pubspec.lock"
-      - ".github/workflows/ci.yml"
 
 env:
-  VERSION_NUMBER: 1.2.2
+  VERSION_NUMBER: 1.2.3
 
 jobs:
   compile:
