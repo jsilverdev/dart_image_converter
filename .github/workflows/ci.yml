@@ -104,4 +104,4 @@ jobs:
           commit: main
           tag: v${{ env.VERSION_NUMBER }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          artifacts: binaries/
+          artifacts: "binaries/**"
