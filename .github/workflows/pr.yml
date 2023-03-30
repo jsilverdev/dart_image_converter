@@ -23,9 +23,9 @@ jobs:
 
       - name: Get the version number
         id: get_version_number
-        uses: mikefarah/yq@v4
+        uses: mikefarah/yq@master
         with:
-          cmd: yq '.env.VERSION_NUMBER' .github/workflows/ci.yml
+          cmd: yq '.env.["VERSION_NUMBER"]' '.github/workflows/ci.yml'
 
       - name: Check if the version on CI is different of the latest release
         run: |
