@@ -27,14 +27,11 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.lock') }}
-          path: |
-            ~/.pub-cache
-            .dart-tool
+          path: ~/.pub-cache
 
       - uses: dart-lang/setup-dart@v1
 
       - name: Install dependencies
-        if: steps.restore-cache-deps.outputs.cache-hit != 'true'
         run: dart pub get
 
       - name: Save Cache dependencies
@@ -42,9 +39,7 @@ jobs:
         if: steps.restore-cache-deps.outputs.cache-hit != 'true'
         with:
           key: ${{ steps.restore-cache-deps.outputs.cache-primary-key }}
-          path: |
-            ~/.pub-cache
-            .dart-tool
+          path: ~/.pub-cache
 
       - name: Analyze project source
         run: dart analyze
