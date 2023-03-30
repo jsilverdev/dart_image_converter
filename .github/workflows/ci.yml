@@ -84,15 +84,13 @@ jobs:
           sed -i "s|binaries\\\\win-[^\\\\]*-x64.exe|binaries\\\\win-v${{ env.VERSION_NUMBER }}-x64.exe|g" run_win-x64.bat
 
       - name: Create and push branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git remote set-url origin https://$GITHUB_TOKEN@github.com/${{ github.repository }}.git
+          git remote set-url origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}.git
           git add .
           git commit -m "Upgrade to version v${{ env.VERSION_NUMBER }}"
-          git push origin HEAD
+          git push --force-with-lease origin main
 
       - name: Create and publish release
         uses: ncipollo/release-action@v1
