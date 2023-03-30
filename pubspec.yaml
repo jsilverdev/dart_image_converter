@@ -1,6 +1,6 @@
 name: image_converter
 description: Simple command-line application to transform images and PDF's to resized jpg's images built with Dart.
-version: 1.2.11
+version: 1.2.12
 # repository: https://github.com/my_org/my_repo
 
 environment:
