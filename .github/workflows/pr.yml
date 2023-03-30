@@ -2,7 +2,7 @@ name: PR Review
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, ready_for_review]
     paths:
       - "**.dart"
       - "**.so"
@@ -17,7 +17,7 @@ jobs:
 
   analyze_and_test:
     needs: check-version
-    if: needs.check-version.result == 'success' || needs.check-version.result == 'skipped'
+    if: always() && (needs.check-version.result == 'success' || needs.check-version.result == 'skipped')
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

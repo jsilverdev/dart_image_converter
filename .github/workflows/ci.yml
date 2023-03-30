@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 env:
-  VERSION_NUMBER: 1.2.11
+  VERSION_NUMBER: 1.2.12
 
 jobs:
   check-version:
@@ -104,4 +104,4 @@ jobs:
           commit: main
           tag: v${{ env.VERSION_NUMBER }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          artifacts: binaries/
+          artifacts: "binaries/**"
