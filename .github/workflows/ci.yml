@@ -83,7 +83,6 @@ jobs:
 
       - name: Increase version in files
         run: |
-          sed -i "s/version:.*/version: ${{ needs.check-version.outputs.version_number }}/g" pubspec.yaml
           sed -i "s|binaries/linux-[^;]*|binaries/linux-v${{ needs.check-version.outputs.version_number }}-x64|g" run_linux-x64.sh
           sed -i "s|binaries\\\\win-[^\\\\]*-x64.exe|binaries\\\\win-v${{ needs.check-version.outputs.version_number }}-x64.exe|g" run_win-x64.bat
 
