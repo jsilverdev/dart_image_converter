@@ -1,2 +1,2 @@
-binaries\win-v1.2.5-x64.exe
+binaries\win-v1.2.6-x64.exe
 pause
