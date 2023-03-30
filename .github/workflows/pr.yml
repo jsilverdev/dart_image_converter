@@ -9,9 +9,35 @@ on:
       - "**.dll"
       - "pubspec.yaml"
       - "pubspec.lock"
+      - ".github/workflows/*.yml"
 
 jobs:
+  check-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Get the version number
+        id: get_version_number
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.env.VERSION_NUMBER' .github/workflows/ci.yml
+
+      - name: Check if the version on CI is different of the latest release
+        run: |
+          REMOTE=$(git ls-remote --tags origin "v${{ steps.get_version_number.outputs.result }}" | wc -l)
+          if [ "${REMOTE}" -ne "0" ]; then
+            echo "Tag already exists. Please update VERSION_NUMBER."
+            exit 1
+          fi
+
   pr-review:
+    needs: check-version
+    if: ${{ needs.check-version.result == 'success' }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
