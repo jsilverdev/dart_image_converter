@@ -2,7 +2,7 @@ name: PR Review
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, reopened]
     paths:
       - "**.dart"
       - "**.so"
@@ -12,13 +12,12 @@ on:
 
 jobs:
   check-version:
+    if: github.event.pull_request.base.ref == 'main'
     uses: ./.github/workflows/check-version.yml
-    with:
-      ref: ${{ github.event.pull_request.head.ref }}
 
-  pr-review:
+  analyze_and_test:
     needs: check-version
-    if: ${{ needs.check-version.result == 'success' }}
+    if: needs.check-version.result == 'success' || needs.check-version.result == 'skipped'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -26,8 +25,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
 
       - id: restore-cache-deps
         name: Restore Cache dependencies

@@ -5,13 +5,11 @@ on:
     branches: ["main"]
 
 env:
-  VERSION_NUMBER: 1.2.10
+  VERSION_NUMBER: 1.2.11
 
 jobs:
   check-version:
     uses: ./.github/workflows/check-version.yml
-    with:
-      ref: ${{ github.event.ref }}
 
   compile:
     needs: check-version
@@ -106,3 +104,4 @@ jobs:
           commit: main
           tag: v${{ env.VERSION_NUMBER }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          artifacts: binaries/

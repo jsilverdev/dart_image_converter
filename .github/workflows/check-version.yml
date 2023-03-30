@@ -2,10 +2,6 @@ name: Check version
 
 on:
   workflow_call:
-    inputs:
-      ref:
-        required: true
-        type: string
 
 jobs:
   check-version:
@@ -14,8 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.ref }}
 
       - name: Get the version number
         id: get_version_number
