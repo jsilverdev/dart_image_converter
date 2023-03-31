@@ -94,12 +94,11 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "Upgrade to version v${{ needs.check-version.outputs.version_number }}" -m $'\nskip-checks: true' --cleanup=verbatim
-          git push origin HEAD
+          git tag v${{ needs.check-version.outputs.version_number }}
+          git push origin HEAD --tags
 
       - name: Create and publish release
         uses: ncipollo/release-action@v1
         with:
-          commit: main
           tag: v${{ needs.check-version.outputs.version_number }}
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           artifacts: "binaries/**"
