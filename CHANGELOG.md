@@ -11,7 +11,40 @@ and this project adheres to [Semantic Versioning].
 
 ## [1.2.13] - 2023-03-30
 
+### Added
+
+- GitHub Action to check if the version of from pubspec.yaml
+- GitHub Action for PR's
+- Tests
+
+### Changed
+
+- Caching for install deps
+- Migrate the action from marvinpinto/action-automatic-releases@latest to ncipollo/release-action@v1 for deploy releases
+- README details
+
+### Removed
+
+- Execution of tests on ci.yaml
+
+
 ## [1.1.5] - 2023-03-29
+
+### Added
+
+- GitHub Action to deploy
+- Files for testing
+- Tests
+- Support files with jpeg extension
+- New exception: ArchNotSupportedException
+- Support for Linux (and shell script for run)
+
+### Changed
+
+- Upgrade pdfium_bindings to 2.0.1
+- NullException now is NullOrEmptyException
+- simplePrint and simpleErrorPrint now only support String objects
+- Rename description on pubspec.yaml
 
 ## [1.0.0-rc1] - 2023-03-28
 
