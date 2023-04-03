@@ -19,9 +19,9 @@ jobs:
 
       - name: Get the version number
         id: get_version_number
-        uses: mikefarah/yq@v4
+        uses: mikefarah/yq@master
         with:
-          cmd: yq '.["version"]' 'pubspec.yaml'
+          cmd: yq .version pubspec.yaml
 
       - name: Get latest tag from repository
         id: latest_tag
