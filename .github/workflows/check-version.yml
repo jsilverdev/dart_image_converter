@@ -19,30 +19,25 @@ jobs:
 
       - name: Get the version number
         id: get_version_number
-        uses: mikefarah/yq@master
+        uses: mikefarah/yq@v4
         with:
           cmd: yq '.["version"]' 'pubspec.yaml'
 
       - name: Get latest tag from repository
         id: latest_tag
         run: |
-          latest_tag=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' --refs origin "refs/tags/v*" | tail -n1 | sed 's/.*\///' | sed 's/^v//')
-          echo "::set-output name=latest_tag::$latest_tag"
+          LATEST_TAG=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' --refs origin "refs/tags/v*" | awk '{print substr($2, 11)}' | tail -n1)
+          echo "latest_tag=${LATEST_TAG}" >> $GITHUB_OUTPUT
 
       - name: Compare versions
-        if: ${{ steps.latest_tag.outputs.latest_tag != '' }}
+        if: steps.latest_tag.outputs.latest_tag != ''
         run: |
-          latest_tag=$({{ steps.latest_tag.outputs.latest_tag }})
-          version_number=${{ steps.get_version_number.outputs.result }}
-          if [[ "$(printf '%s\n' "$version_number" "$latest_tag" | tr '-' '~' | sort -V | head -n1 | tr '~' '-')" != "$latest_tag" ]]; then
-            echo "Version number from pubspec.yaml ($version_number) is not greater than the latest tag ($latest_tag)"
+          LATEST_TAG=${{ steps.latest_tag.outputs.latest_tag }}
+          VERSION_NUMBER=${{ steps.get_version_number.outputs.result }}
+          if [[ "$(printf '%s\n' "$VERSION_NUMBER" "$LATEST_TAG" | tr '-' '~' | sort -V | head -n1 | tr '~' '-')" != "$LATEST_TAG" ]]; then
+            echo "Version number from pubspec.yaml ($VERSION_NUMBER) is not greater than the latest tag ($LATEST_TAG)"
             exit 1
           fi
-
-      - name: No tags created yet
-        if: ${{ steps.latest_tag.outputs.latest_tag == '' }}
-        run: |
-          echo "No tags created yet. Skipping version check."
 
       - name: Validate version entry on CHANGELOG.md
         run: |
