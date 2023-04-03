@@ -19,9 +19,9 @@ jobs:
 
       - name: Get the version number
         id: get_version_number
-        uses: mikefarah/yq@v4
+        uses: mikefarah/yq@master
         with:
-          cmd: yq '.["version"]' 'pubspec.yaml'
+          cmd: yq .version pubspec.yaml
 
       - name: Get latest tag from repository
         id: latest_tag
@@ -33,9 +33,9 @@ jobs:
         if: steps.latest_tag.outputs.latest_tag != ''
         run: |
           LATEST_TAG=${{ steps.latest_tag.outputs.latest_tag }}
-          VERSION_NUMBER=${{ steps.get_version_number.outputs.result }}
-          if [[ "$(printf '%s\n' "$VERSION_NUMBER" "$LATEST_TAG" | tr '-' '~' | sort -V | head -n1 | tr '~' '-')" != "$LATEST_TAG" ]]; then
-            echo "Version number from pubspec.yaml ($VERSION_NUMBER) is not greater than the latest tag ($LATEST_TAG)"
+          VERSION=v${{ steps.get_version_number.outputs.result }}
+          if [[ "$(printf '%s\n' "$VERSION" "$LATEST_TAG" | tr '-' '~' | sort -V | head -n1 | tr '~' '-')" != "$LATEST_TAG" ]]; then
+            echo "Version from pubspec.yaml ($VERSION) is not greater than the latest tag ($LATEST_TAG)"
             exit 1
           fi
 

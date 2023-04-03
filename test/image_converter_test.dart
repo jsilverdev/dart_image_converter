@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:image_converter/image_converter.dart';
 import 'package:image_converter/models/configuration.dart';
-import 'package:image_converter/models/process_image_result.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -14,7 +13,7 @@ void main() {
   });
 
   test(
-    'Should return the valid files and the invalid paths',
+    'Should check for the valid files and the failed paths',
     () async {
       //arrange
       final dir = Directory(
@@ -24,12 +23,14 @@ void main() {
         dir,
         searchTerm: "sample",
       );
+
+      final imageConverter = ImageConverter(configuration);
       //act
-      final filesResult = findFilesByConfig(configuration);
+      imageConverter.findValidFilesAndFailedPaths();
 
       //assert
-      expect(filesResult.files.length, equals(2));
-      expect(filesResult.failedPaths.length, equals(2));
+      expect(imageConverter.files.length, equals(2));
+      expect(imageConverter.failedPaths.length, equals(2));
     },
   );
 
@@ -37,44 +38,72 @@ void main() {
     'Should convert and resize a list of files correctly',
     () async {
       //arrange
-      String imagePath = path.absolute("test/_data/valid_image_path");
-      final result = FilesResult(
-        [
-          "$imagePath/invalid_subfolder_1",
-          "$imagePath/invalid_subfolder_2",
-        ],
-        [
-          File("$imagePath/valid_subfolder_1/sample.png"),
-          File("$imagePath/valid_subfolder_2/sample.pdf")
-        ],
+      final imagePath = path.absolute("test/_data/valid_image_path");
+      final imageConverter = ImageConverter(
+        Configuration.load(
+          Directory(imagePath),
+          searchTerm: "sample",
+        ),
       );
+      imageConverter.files = [
+        File("$imagePath/valid_subfolder_1/sample.png"),
+        File("$imagePath/valid_subfolder_2/sample.pdf")
+      ];
 
-      final configuration =
-          Configuration.load(Directory(imagePath), searchTerm: "sample");
       int imageSavedCounter = 0;
-      int invalidFolderCounter = 0;
-
 
       //act
       IOOverrides.runZoned(
-        () => processFiles(result, configuration),
+        () => imageConverter.resizeAndSaveValidFilesAsJpg(),
         stdout: () => FakeStdout(),
       );
       final dir = Directory("$imagePath/results");
+
       for (var log in printLog) {
-        if(log is! String) continue;
-        if(log.contains("Image saved in:")) {
+        if (log is! String) continue;
+        if (log.contains("Image saved in:")) {
           imageSavedCounter++;
-        }
-        if(log.contains("invalid")) {
-          invalidFolderCounter++;
         }
       }
 
       //assert
       expect(dir.existsSync(), equals(true));
       expect(imageSavedCounter, equals(2));
-      expect(invalidFolderCounter, equals(2));
+    },
+  );
+
+  test(
+    'Should list the failed paths',
+    () async {
+      //arrange
+      final imagePath = path.absolute("test/_data/valid_image_path");
+      final imageConverter = ImageConverter(
+        Configuration.load(
+          Directory(imagePath),
+          searchTerm: "sample",
+        ),
+      );
+      imageConverter.failedPaths = [
+        "$imagePath/invalid_subfolder_1",
+        "$imagePath/invalid_subfolder_2",
+      ];
+      int imagesFailed = 0;
+
+      //act
+      IOOverrides.runZoned(
+        () => imageConverter.checkFailedPaths(),
+        stdout: () => FakeStdout(),
+      );
+
+      for (var log in printLog) {
+        if (log is! String) continue;
+        if (log.contains("invalid_subfolder")) {
+          imagesFailed++;
+        }
+      }
+
+      //assert
+      expect(imagesFailed, equals(imageConverter.failedPaths.length));
     },
   );
 }
