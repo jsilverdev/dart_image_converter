@@ -3,8 +3,11 @@ name: Build and Release
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-      - .github/workflows/**
+    paths:
+      - "**.dart"
+      - "**.so"
+      - "**.dll"
+      - "pubspec.lock"
 
 jobs:
   check-version:
@@ -97,8 +100,20 @@ jobs:
           git tag v${{ needs.check-version.outputs.version_number }}
           git push origin HEAD --tags
 
+      - name: Get Changelog Entry
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          validation_level: warn
+          validation_depth: 5
+          version: ${{ needs.check-version.outputs.version_number }}
+          path: ./CHANGELOG.md
+
       - name: Create and publish release
         uses: ncipollo/release-action@v1
         with:
           tag: v${{ needs.check-version.outputs.version_number }}
           artifacts: "binaries/**"
+          body: ${{ steps.changelog_reader.outputs.changes }}
+          prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
+          draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
