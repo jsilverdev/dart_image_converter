@@ -3,8 +3,11 @@ name: Build and Release
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-      - .github/workflows/**
+    paths:
+      - "**.dart"
+      - "**.so"
+      - "**.dll"
+      - "pubspec.lock"
 
 jobs:
   check-version:
@@ -94,12 +97,23 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "Upgrade to version v${{ needs.check-version.outputs.version_number }}" -m $'\nskip-checks: true' --cleanup=verbatim
-          git push origin HEAD
+          git tag v${{ needs.check-version.outputs.version_number }}
+          git push origin HEAD --tags
+
+      - name: Get Changelog Entry
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          validation_level: warn
+          validation_depth: 5
+          version: ${{ needs.check-version.outputs.version_number }}
+          path: ./CHANGELOG.md
 
       - name: Create and publish release
         uses: ncipollo/release-action@v1
         with:
-          commit: main
           tag: v${{ needs.check-version.outputs.version_number }}
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           artifacts: "binaries/**"
+          body: ${{ steps.changelog_reader.outputs.changes }}
+          prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
+          draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}

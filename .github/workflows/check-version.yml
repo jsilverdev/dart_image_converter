@@ -19,14 +19,30 @@ jobs:
 
       - name: Get the version number
         id: get_version_number
-        uses: mikefarah/yq@master
+        uses: mikefarah/yq@v4
         with:
           cmd: yq '.["version"]' 'pubspec.yaml'
 
-      - name: Check if the version on CI is different of the latest release
+      - name: Get latest tag from repository
+        id: latest_tag
         run: |
-          REMOTE=$(git ls-remote --tags origin "v${{ steps.get_version_number.outputs.result }}" | wc -l)
-          if [ "${REMOTE}" -ne "0" ]; then
-            echo "Tag already exists. Please update VERSION_NUMBER."
+          LATEST_TAG=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' --refs origin "refs/tags/v*" | awk '{print substr($2, 11)}' | tail -n1)
+          echo "latest_tag=${LATEST_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Compare versions
+        if: steps.latest_tag.outputs.latest_tag != ''
+        run: |
+          LATEST_TAG=${{ steps.latest_tag.outputs.latest_tag }}
+          VERSION_NUMBER=${{ steps.get_version_number.outputs.result }}
+          if [[ "$(printf '%s\n' "$VERSION_NUMBER" "$LATEST_TAG" | tr '-' '~' | sort -V | head -n1 | tr '~' '-')" != "$LATEST_TAG" ]]; then
+            echo "Version number from pubspec.yaml ($VERSION_NUMBER) is not greater than the latest tag ($LATEST_TAG)"
+            exit 1
+          fi
+
+      - name: Validate version entry on CHANGELOG.md
+        run: |
+          changelog_entry=$(grep -E "^##\s+\[${{ steps.get_version_number.outputs.result }}\]" CHANGELOG.md)
+          if [ -z "$changelog_entry" ]; then
+            echo "No changelog entry found for version ${{ steps.get_version_number.outputs.result }} in CHANGELOG.md"
             exit 1
           fi
