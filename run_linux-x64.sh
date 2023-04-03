@@ -24,4 +24,4 @@ then
     exit 0
 fi
 
-$detected_term -e "bash -c 'binaries/linux-v1.2.13-x64; $SHELL'"
+$detected_term -e "bash -c 'binaries/linux-v1.2.14-x64; $SHELL'"
