@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:image_converter/errors/exceptions.dart';
+import 'package:image_converter/models/configuration.dart';
 import 'package:image_converter/setup.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -35,13 +36,16 @@ void _testUserCancel(String? readLine, Stdin stdin) {
   when(
     () => stdin.readLineSync(encoding: utf8),
   ).thenReturn(readLine);
+  final configuration = Configuration.load(
+    Directory.current,
+  );
 
   //act
   //assert
   expect(
     () => IOOverrides.runZoned(
       () {
-        initialSetup(false);
+        Setup(configuration).initialSetup();
       },
       stdin: () => stdin,
     ),

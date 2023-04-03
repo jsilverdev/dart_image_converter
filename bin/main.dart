@@ -6,12 +6,13 @@ import 'package:image_converter/utils/common.dart';
 void main(List<String> arguments) async {
   try {
     final configuration = await loadConfiguration();
-    initialSetup(configuration.skipFiles);
 
-    processFiles(
-      findFilesByConfig(configuration),
-      configuration,
-    );
+    Setup(configuration).initialSetup();
+
+    ImageConverter(configuration)
+      ..findValidFilesAndFailedPaths()
+      ..resizeAndSaveValidFilesAsJpg()
+      ..checkFailedPaths();
 
   } catch (e) {
     simpleErrorPrint(e.toString());

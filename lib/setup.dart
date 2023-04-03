@@ -2,22 +2,28 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'errors/exceptions.dart';
+import 'models/configuration.dart';
 import 'utils/common.dart';
 
-void initialSetup(bool skipFiles) {
+class Setup {
+  final Configuration configuration;
 
-  simplePrint(
-    skipFiles
-        ? "If a file exists with the same, it will be skipped"
-        : "If a file with the same name exists, it will be overwritten",
-  );
-  simplePrint("Continue ? y/n (default yes)");
+  Setup(this.configuration);
 
-  var line = stdin.readLineSync(encoding: utf8);
+  void initialSetup() {
+    simplePrint(
+      configuration.skipFiles
+          ? "If a file exists with the same, it will be skipped"
+          : "If a file with the same name exists, it will be overwritten",
+    );
+    simplePrint("Continue ? y/n (default yes)");
 
-  if (line?.toLowerCase() == 'n' || line?.toLowerCase() == 'no') {
-    throw UserCancelException();
+    var line = stdin.readLineSync(encoding: utf8);
+
+    if (line?.toLowerCase() == 'n' || line?.toLowerCase() == 'no') {
+      throw UserCancelException();
+    }
+
+    printSeparator();
   }
-
-  printSeparator();
 }
