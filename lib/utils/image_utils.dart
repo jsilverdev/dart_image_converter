@@ -5,7 +5,7 @@ import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 import 'package:pdfium_bindings/pdfium_bindings.dart';
 
-import '../errors/exceptions.dart';
+import '../exceptions/app_exceptions.dart';
 import 'common.dart';
 import 'file_utils.dart';
 

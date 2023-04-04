@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 
+import 'constants/settings.dart';
 import 'models/configuration.dart';
 import 'utils/common.dart';
 import 'utils/file_utils.dart';
@@ -29,7 +30,10 @@ class ImageConverter {
                 file!.path.toLowerCase().contains(
                       configuration.searchTerm.toLowerCase(),
                     ) &&
-                isValidExtension(file.path),
+                isValidExtension(
+                  file.path,
+                  extensions: validFileExtensions,
+                ),
             orElse: () {
               failedPaths.add(dir.path);
               return null;
@@ -84,7 +88,7 @@ class ImageConverter {
 
     printSeparator();
     simplePrint(
-      'The following folders do not have any images with the word "${configuration.searchTerm}" or with admitted extensions ${fileUtils.validFileExtensions}:',
+      'The following folders do not have any images with the word "${configuration.searchTerm}" or with admitted extensions $validFileExtensions:',
     );
     for (var failedPathText in failedPaths) {
       simplePrint(failedPathText);

@@ -5,7 +5,7 @@ import 'package:image_converter/utils/common.dart';
 
 void main(List<String> arguments) async {
   try {
-    final configuration = await loadConfiguration();
+    final configuration = await Config().loadConfiguration();
 
     Setup(configuration).initialSetup();
 
