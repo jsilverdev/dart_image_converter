@@ -1,28 +1,25 @@
 import 'package:dotenv/dotenv.dart';
 import 'package:image_converter/config.dart';
-import 'package:image_converter/errors/exceptions.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:image_converter/exceptions/app_exceptions.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
-class MockConfig extends Mock implements Config {}
+
 
 void main() {
-  setUp(() {
-    config = MockConfig();
-  });
 
   test(
     'Should throws an NullOrEmptyException if IMAGES_PATH is null',
     () async {
       //arrange
-      when(() => config.env).thenReturn(DotEnv());
-
+      final config = Config(
+        env: DotEnv()
+      );
       //act
 
       //assert
       expect(
-        () => loadConfiguration(),
+        () => config.loadConfiguration(),
         throwsA(isA<NullOrEmptyException>()),
       );
     },
@@ -34,13 +31,15 @@ void main() {
       //arrange
       final dotEnv = DotEnv();
       dotEnv.addAll({"IMAGES_PATH": ""});
-      when(() => config.env).thenReturn(dotEnv);
+      final config = Config(
+        env: dotEnv
+      );
 
       //act
 
       //assert
       expect(
-        () => loadConfiguration(),
+        () => config.loadConfiguration(),
         throwsA(isA<NullOrEmptyException>()),
       );
     },
@@ -52,14 +51,14 @@ void main() {
       //arrange
       final dotEnv = DotEnv();
       dotEnv.addAll({"IMAGES_PATH": "test/_data/invalid_image_path"});
-
-      when(() => config.env).thenReturn(dotEnv);
+      final config = Config(
+        env: dotEnv
+      );
 
       //act
-
       //assert
       expect(
-        () => loadConfiguration(),
+        () => config.loadConfiguration(),
         throwsA(isA<DirectoryInvalidException>()),
       );
     },
@@ -73,10 +72,12 @@ void main() {
       final String validDirPath = path.absolute("test/_data/valid_image_path");
       final dotEnv = DotEnv();
       dotEnv.addAll({"IMAGES_PATH": validDirPath});
+      final config = Config(
+        env: dotEnv
+      );
 
-      when(() => config.env).thenReturn(dotEnv);
       //act
-      final configuration = await loadConfiguration();
+      final configuration = await config.loadConfiguration();
 
       //assert
       expect(configuration.imageDir.path, equals(validDirPath));

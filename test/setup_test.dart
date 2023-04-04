@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:image_converter/errors/exceptions.dart';
+import 'package:image_converter/exceptions/app_exceptions.dart';
 import 'package:image_converter/models/configuration.dart';
 import 'package:image_converter/setup.dart';
 import 'package:mocktail/mocktail.dart';

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:image/image.dart' as img;
-import 'package:image_converter/errors/exceptions.dart';
+import 'package:image_converter/exceptions/app_exceptions.dart';
 import 'package:image_converter/utils/image_utils.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';

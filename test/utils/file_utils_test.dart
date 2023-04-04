@@ -1,15 +1,7 @@
 import 'package:image_converter/utils/file_utils.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockFileUtils extends Mock implements FileUtils {}
-
 void main() {
-
-  setUp(() {
-    fileUtils = MockFileUtils();
-  });
-
   test(
     'Should get a text correctly sanitized',
     () async {
@@ -33,14 +25,21 @@ void main() {
       //arrange
       String validExtension = "valid";
       String invalidExtension = "invalid";
-      when(() => fileUtils.validFileExtensions).thenReturn([
-        validExtension
-      ]);
+      List<String> validExtensions = [validExtension];
 
       //act
-      bool isValid1 = isValidExtension("file.$validExtension");
-      bool isValid2 = isValidExtension("file.${validExtension.toUpperCase()}");
-      bool isValid3 = isValidExtension("file.$invalidExtension");
+      bool isValid1 = isValidExtension(
+        "file.$validExtension",
+        extensions: validExtensions,
+      );
+      bool isValid2 = isValidExtension(
+        "file.${validExtension.toUpperCase()}",
+        extensions: validExtensions,
+      );
+      bool isValid3 = isValidExtension(
+        "file.$invalidExtension",
+        extensions: validExtensions,
+      );
 
       //assert
       expect(isValid1, equals(true));

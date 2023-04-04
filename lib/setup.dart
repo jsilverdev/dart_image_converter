@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'errors/exceptions.dart';
+import 'exceptions/app_exceptions.dart';
 import 'models/configuration.dart';
 import 'utils/common.dart';
 

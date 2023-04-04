@@ -1,42 +1,42 @@
 import 'dart:io';
 
 import 'package:dotenv/dotenv.dart';
-import 'errors/exceptions.dart';
+import 'exceptions/app_exceptions.dart';
 import 'models/configuration.dart';
 import 'package:path/path.dart' as path;
 
-Config config = Config();
-
 class Config {
 
-  DotEnv get env => _env;
+  late DotEnv _env;
 
-  final DotEnv _env = DotEnv(includePlatformEnvironment: false)..load();
-}
-
-Future<Configuration> loadConfiguration() async {
-
-  String? optionalImagePath = config.env["IMAGES_PATH"];
-  if(optionalImagePath == null || optionalImagePath.isEmpty) {
-    throw NullOrEmptyException();
+  Config({DotEnv? env}) {
+    _env = env ?? (DotEnv()..load());
   }
 
-  String imagePath = path.absolute(optionalImagePath);
+  Future<Configuration> loadConfiguration() async {
 
-  bool isDir = await FileSystemEntity.isDirectory(imagePath);
-  if (!isDir) {
-    throw DirectoryInvalidException(imagePath);
+    String? optionalImagePath = _env["IMAGES_PATH"];
+    if(optionalImagePath == null || optionalImagePath.isEmpty) {
+      throw NullOrEmptyException();
+    }
+
+    String imagePath = path.absolute(optionalImagePath);
+
+    bool isDir = await FileSystemEntity.isDirectory(imagePath);
+    if (!isDir) {
+      throw DirectoryInvalidException(imagePath);
+    }
+
+    return Configuration.load(
+      Directory(imagePath),
+      width: int.tryParse(_env["WIDTH"] ?? ''),
+      height: int.tryParse(_env["HEIGHT"] ?? ''),
+      searchTerm: _env["SEARCH_TERM"],
+      prefixFile: _env["PREFIX_FILE"],
+      skipFiles: (_env["SKIP_FILES"] ?? '').tryParseBool(),
+      resultsFolder: _env["RESULTS_FOLDER"],
+    );
   }
-
-  return Configuration.load(
-    Directory(imagePath),
-    width: int.tryParse(config.env["WIDTH"] ?? ''),
-    height: int.tryParse(config.env["HEIGHT"] ?? ''),
-    searchTerm: config.env["SEARCH_TERM"],
-    prefixFile: config.env["PREFIX_FILE"],
-    skipFiles: (config.env["SKIP_FILES"] ?? '').tryParseBool(),
-    resultsFolder: config.env["RESULTS_FOLDER"],
-  );
 }
 
 extension BoolParsing on String {

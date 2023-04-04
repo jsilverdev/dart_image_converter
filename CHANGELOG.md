@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.2.15] - 2023-04-04
+
+### Changed
+
+- Improve Testing for file_utils, image_utils and config
+- Rename errors folder to exceptions folder
+- Move validExtensions to constants folder in settings file
+- Change logic for isValidExtension function
+
 ## [1.2.14] - 2023-04-02
 
 ### Changed
@@ -61,7 +70,9 @@ and this project adheres to [Semantic Versioning].
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/jsilverdev/dart_image_converter/compare/v1.2.13...HEAD
+[unreleased]: https://github.com/jsilverdev/dart_image_converter/compare/v1.2.15...HEAD
+[1.2.15]: https://github.com/jsilverdev/dart_image_converter/compare/v1.2.14...v1.2.15
+[1.2.14]: https://github.com/jsilverdev/dart_image_converter/compare/v1.2.13...v1.2.14
 [1.2.13]: https://github.com/jsilverdev/dart_image_converter/compare/v1.1.1..v1.2.13
 [1.1.1]: https://github.com/jsilverdev/dart_image_converter/compare/v1.0.0-rc1...v1.1.1
 [1.0.0-rc1]: https://github.com/jsilverdev/dart_image_converter/releases/tag/v1.0.0-rc1
