@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning].
 
 - /
 
+## [1.2.16-rc1] - 2023-09-22
+
+### Changed
+
+- Upgrade dependencies
+
+
 ## [1.2.15] - 2023-04-04
 
 ### Changed
@@ -70,7 +77,8 @@ and this project adheres to [Semantic Versioning].
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/jsilverdev/dart_image_converter/compare/v1.2.15...HEAD
+[unreleased]: https://github.com/jsilverdev/dart_image_converter/compare/v1.2.16...HEAD
+[1.2.16]: https://github.com/jsilverdev/dart_image_converter/compare/v1.2.15...v1.2.16
 [1.2.15]: https://github.com/jsilverdev/dart_image_converter/compare/v1.2.14...v1.2.15
 [1.2.14]: https://github.com/jsilverdev/dart_image_converter/compare/v1.2.13...v1.2.14
 [1.2.13]: https://github.com/jsilverdev/dart_image_converter/compare/v1.1.1..v1.2.13

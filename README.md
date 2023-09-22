@@ -81,7 +81,3 @@ To run tests, run the following command
 ```bash
   dart test
 ```
-
-## Roadmap
-
-- Functionality for upload to GCP
